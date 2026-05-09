@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: cryptide
+      POSTGRES_PASSWORD: cryptide
+      POSTGRES_DB: cryptide
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://cryptide:cryptide@postgres:5432/cryptide
+    env_file:
+      - .env
+    volumes:
+      - ./api:/app
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
