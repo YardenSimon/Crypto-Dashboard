@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Frontend:** React + Vite + TypeScript, TailwindCSS + shadcn/ui, TanStack Query, React Router, React Hook Form + Zod
 - **Backend:** FastAPI (Python 3.11+), SQLAlchemy 2.0 + Alembic, Pydantic v2, argon2-cffi, python-jose, httpx
 - **Database:** PostgreSQL 16 (Railway in prod, docker-compose locally)
-- **External APIs:** Groq (Llama 3.3 70B, primary LLM), Google Gemini Flash 2.0 (fallback LLM), CoinGecko (prices), CryptoPanic (news), Reddit JSON endpoint (memes)
+- **External APIs:** Groq (Llama 3.3 70B, primary LLM), Google Gemini Flash 2.0 (fallback LLM), CoinGecko (prices), RSS feeds — CoinTelegraph/Decrypt/CoinDesk (news), Reddit JSON endpoint (memes)
 - **Testing:** pytest + httpx test client (backend), Vitest + React Testing Library (frontend)
 - **Deployment:** Vercel (frontend), Railway (backend + DB)
 
@@ -63,7 +63,7 @@ npx vitest run tests/Quiz.test.tsx  # run a single test file
     schemas/      # Pydantic request/response schemas
     services/
       coingecko.py
-      cryptopanic.py
+      news.py
       reddit_memes.py
       llm/        # base.py (LLMClient interface), groq.py, gemini.py
       cache.py    # api_cache table helpers
@@ -128,7 +128,6 @@ JWT_ALGORITHM=HS256
 COOKIE_DOMAIN
 FRONTEND_ORIGIN
 COINGECKO_API_KEY
-CRYPTOPANIC_API_KEY
 GROQ_API_KEY
 GEMINI_API_KEY
 ```

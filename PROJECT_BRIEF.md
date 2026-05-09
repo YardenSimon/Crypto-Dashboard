@@ -43,7 +43,7 @@ Cryptide is a personalized crypto investor dashboard. Users sign up, complete a 
 | Groq API (Llama 3.3 70B) | Primary LLM for daily insight generation | API key |
 | Google Gemini Flash 2.0 | Fallback LLM (on insight retry) | API key |
 | CoinGecko API | Live coin price data | Free demo key |
-| CryptoPanic API | Crypto news headlines | Free key |
+| RSS feeds (CoinTelegraph, Decrypt, CoinDesk) | Crypto news headlines | None required |
 | Reddit JSON endpoint (`r/cryptocurrencymemes`) | Daily meme | None required |
 
 ### Deployment
@@ -88,7 +88,7 @@ Crypto-Dashboard/
 │   │   │   └── insights.py       # POST /insights/retry
 │   │   ├── services/
 │   │   │   ├── coingecko.py
-│   │   │   ├── cryptopanic.py
+│   │   │   ├── news.py
 │   │   │   ├── reddit_memes.py
 │   │   │   ├── llm/
 │   │   │   │   ├── base.py       # LLMClient interface
@@ -196,7 +196,7 @@ Ensures at most 3 LLM calls per day regardless of user count (one per investor t
 ### `api_cache`
 | Column | Type | Notes |
 |---|---|---|
-| key | text | Primary key (e.g. `cryptopanic:hot`, `reddit:memes`) |
+| key | text | Primary key (e.g. `crypto_news`, `reddit_meme`) |
 | payload | jsonb | |
 | fetched_at | timestamptz | |
 | expires_at | timestamptz | News: 10 min; Memes: 6 hours |
@@ -258,7 +258,7 @@ All authenticated endpoints require the JWT cookie. CORS allows only the configu
 
 | Section | Data Source | Cache Strategy | Frontend Refresh |
 |---|---|---|---|
-| Market News | CryptoPanic API | Server-side, 10 min (`api_cache`) | On open + every 10 min |
+| Market News | RSS feeds (CoinTelegraph, Decrypt, CoinDesk) | Server-side, 10 min (`api_cache`) | On open + every 10 min |
 | Coin Prices | CoinGecko API | None (live) | Every 60s while page open |
 | AI Insight of the Day | Groq → Gemini | Per `(investor_type, date)` | Once per day |
 | Crypto Meme | Reddit JSON | Server-side, 6 hours (`api_cache`) | On open |
@@ -332,7 +332,6 @@ ENVIRONMENT             # development | production
 COOKIE_DOMAIN           # localhost or production domain
 FRONTEND_ORIGIN         # CORS allowed origin (e.g. http://localhost:5173)
 COINGECKO_API_KEY
-CRYPTOPANIC_API_KEY
 GROQ_API_KEY
 GEMINI_API_KEY
 ```

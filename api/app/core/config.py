@@ -12,7 +12,6 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"  # set to "production" on Railway
 
     COINGECKO_API_KEY: str = ""
-    CRYPTOPANIC_API_KEY: str = ""
     GROQ_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
 

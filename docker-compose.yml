@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cryptide -d cryptide"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api:
     build: ./api
@@ -21,7 +26,18 @@ services:
     volumes:
       - ./api:/app
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+  web:
+    build: ./web
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
 
 volumes:
   postgres_data:

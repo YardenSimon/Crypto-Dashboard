@@ -41,7 +41,7 @@ Frontend: Three-question multi-select quiz at `/onboarding`. Root `/` redirect l
 Implement the four backend service integrations independently:
 
 - **CoinGecko** — live coin prices (no cache)
-- **CryptoPanic** — news headlines (server-side `api_cache`, 10-min TTL)
+- **RSS feeds** (CoinTelegraph, Decrypt, CoinDesk) — news headlines (server-side `api_cache`, 10-min TTL; no API key required)
 - **Reddit JSON** — daily meme from `r/cryptocurrencymemes` (server-side `api_cache`, 6-hour TTL)
 - **LLM (Groq + Gemini)** — `LLMClient` base interface, Groq primary, Gemini fallback; versioned prompt at `prompts/daily_insight_v1.txt`; `daily_insights_cache` keyed by `(investor_type, date)`; scheduled job at 00:05 UTC with lazy-generation fallback
 
