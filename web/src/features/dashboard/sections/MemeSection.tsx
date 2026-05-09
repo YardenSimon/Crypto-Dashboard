@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
+import { VoteButtons } from '../VoteButtons'
 
 function MemeSkeleton() {
   return (
@@ -22,9 +23,12 @@ export function MemeSection() {
     <section className="rounded-xl border p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-base">Crypto Meme</h2>
-        {data?.cacheAge && (
-          <span className="text-xs text-muted-foreground">Last updated: {data.cacheAge}</span>
-        )}
+        <div className="flex items-center gap-2">
+          {data?.cacheAge && (
+            <span className="text-xs text-muted-foreground">Last updated: {data.cacheAge}</span>
+          )}
+          {data?.meme && <VoteButtons contentItemId={data.meme.content_item_id} />}
+        </div>
       </div>
       {isLoading ? (
         <MemeSkeleton />

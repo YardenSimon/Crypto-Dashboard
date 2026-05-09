@@ -11,7 +11,13 @@ export interface Preferences {
   content_types: string[]
 }
 
+export interface VoteResponse {
+  content_item_id: string
+  value: -1 | 1 | 0
+}
+
 export interface NewsItem {
+  content_item_id: string
   title: string
   url: string
   published_at: string
@@ -19,6 +25,7 @@ export interface NewsItem {
 }
 
 export interface PriceItem {
+  content_item_id: string
   symbol: string
   name: string
   price_usd: number
@@ -33,6 +40,7 @@ export interface InsightItem {
 }
 
 export interface MemeItem {
+  content_item_id: string
   title: string
   image_url: string
   reddit_url: string
@@ -45,4 +53,5 @@ export interface DashboardResponse {
   insights: InsightItem[]
   meme: MemeItem | null
   cache_ages: Record<string, string>
+  user_votes: Record<string, -1 | 1>
 }

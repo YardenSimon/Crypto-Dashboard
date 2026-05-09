@@ -3,6 +3,7 @@ import { api } from '@/lib/api'
 import { queryClient } from '@/lib/queryClient'
 import type { InsightItem } from '@/lib/types'
 import { Button } from '@/components/ui/button'
+import { VoteButtons } from '../VoteButtons'
 
 function InsightSkeleton() {
   return (
@@ -56,9 +57,12 @@ export function InsightSection() {
         <ul className="space-y-4">
           {insights.map((item: InsightItem) => (
             <li key={item.id} className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {item.investor_type}
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  {item.investor_type}
+                </p>
+                <VoteButtons contentItemId={item.id} />
+              </div>
               <p className="text-sm leading-relaxed">{item.body}</p>
             </li>
           ))}

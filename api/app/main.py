@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.jobs.daily_insights import run_daily_insights_job
-from app.routers import auth, me, dashboard, insights
+from app.routers import auth, me, dashboard, insights, votes
 
 scheduler = AsyncIOScheduler(timezone="UTC")
 
@@ -39,6 +39,7 @@ app.include_router(auth.router, prefix="/auth")
 app.include_router(me.router)
 app.include_router(dashboard.router)
 app.include_router(insights.router)
+app.include_router(votes.router)
 
 
 @app.get("/health")

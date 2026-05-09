@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import type { PriceItem } from '@/lib/types'
+import { VoteButtons } from '../VoteButtons'
 
 function PricesSkeleton() {
   return (
@@ -40,7 +41,7 @@ export function PricesSection() {
       ) : (
         <ul className="space-y-2">
           {prices.map((item: PriceItem) => (
-            <li key={item.symbol} className="flex items-center justify-between text-sm">
+            <li key={item.symbol} className="flex items-center justify-between text-sm gap-2">
               <span className="font-medium">
                 {item.symbol}{' '}
                 <span className="text-muted-foreground font-normal">{item.name}</span>
@@ -49,6 +50,7 @@ export function PricesSection() {
               <span className={item.change_24h >= 0 ? 'text-green-600' : 'text-red-500'}>
                 {item.change_24h >= 0 ? '+' : ''}{item.change_24h.toFixed(2)}%
               </span>
+              <VoteButtons contentItemId={item.content_item_id} />
             </li>
           ))}
         </ul>

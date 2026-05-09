@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import type { NewsItem } from '@/lib/types'
+import { VoteButtons } from '../VoteButtons'
 
 function NewsSkeleton() {
   return (
@@ -38,19 +39,22 @@ export function NewsSection() {
       ) : (
         <ul className="space-y-3">
           {data.items.map((item: NewsItem) => (
-            <li key={item.url}>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm font-medium hover:underline"
-              >
-                {item.title}
-              </a>
-              <p className="text-xs text-muted-foreground">
-                {new Date(item.published_at).toLocaleString()}
-                {item.currencies.length > 0 && ` · ${item.currencies.join(', ')}`}
-              </p>
+            <li key={item.url} className="flex items-start justify-between gap-2">
+              <div>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium hover:underline"
+                >
+                  {item.title}
+                </a>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(item.published_at).toLocaleString()}
+                  {item.currencies.length > 0 && ` · ${item.currencies.join(', ')}`}
+                </p>
+              </div>
+              <VoteButtons contentItemId={item.content_item_id} />
             </li>
           ))}
         </ul>

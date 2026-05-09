@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class NewsItem(BaseModel):
+    content_item_id: str
     title: str
     url: str
     published_at: str
@@ -9,6 +10,7 @@ class NewsItem(BaseModel):
 
 
 class PriceItem(BaseModel):
+    content_item_id: str
     symbol: str
     name: str
     price_usd: float
@@ -23,6 +25,7 @@ class InsightItem(BaseModel):
 
 
 class MemeItem(BaseModel):
+    content_item_id: str
     title: str
     image_url: str
     reddit_url: str
@@ -35,3 +38,4 @@ class DashboardResponse(BaseModel):
     insights: list[InsightItem]
     meme: MemeItem | None
     cache_ages: dict[str, str]
+    user_votes: dict[str, int]
