@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '@/lib/queryClient'
 import { RootRedirect } from '@/routes/RootRedirect'
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
+import { DashboardPage } from '@/features/dashboard/DashboardPage'
 
 function Placeholder({ name }: { name: string }) {
   return <div className="p-8 text-center text-muted-foreground">{name} — not yet implemented</div>
@@ -17,7 +18,7 @@ export default function App() {
           <Route path="/login" element={<Placeholder name="Login" />} />
           <Route path="/signup" element={<Placeholder name="Signup" />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
-          <Route path="/dashboard" element={<Placeholder name="Dashboard" />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/preferences" element={<Placeholder name="Preferences" />} />
         </Routes>
       </BrowserRouter>

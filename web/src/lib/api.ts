@@ -1,4 +1,4 @@
-import type { Preferences, User } from './types'
+import type { DashboardResponse, InsightItem, Preferences, User } from './types'
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
 
@@ -20,4 +20,6 @@ export const api = {
   getPreferences: () => apiFetch<Preferences>('/me/preferences'),
   putPreferences: (body: Preferences) =>
     apiFetch<Preferences>('/me/preferences', { method: 'PUT', body: JSON.stringify(body) }),
+  getDashboard: () => apiFetch<DashboardResponse>('/dashboard'),
+  retryInsight: () => apiFetch<InsightItem[]>('/insights/retry', { method: 'POST' }),
 }
