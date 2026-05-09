@@ -16,7 +16,7 @@ class GroqClient(LLMClient):
                 json={
                     "model": GROQ_MODEL,
                     "messages": [{"role": "user", "content": prompt}],
-                    "max_tokens": 512,
+                    "max_tokens": 100,
                     "temperature": 0.7,
                 },
             )

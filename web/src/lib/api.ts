@@ -27,4 +27,9 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ content_item_id: contentItemId, value }),
     }),
+  login: (email: string, password: string) =>
+    apiFetch<User>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  signup: (email: string, name: string, password: string) =>
+    apiFetch<User>('/auth/signup', { method: 'POST', body: JSON.stringify({ email, name, password }) }),
+  logout: () => apiFetch<void>('/auth/logout', { method: 'POST' }),
 }

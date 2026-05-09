@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { VoteButtons } from '../VoteButtons'
 
-function MemeSkeleton() {
+export function MemeSkeleton() {
   return (
     <div className="animate-pulse space-y-2">
       <div className="h-48 bg-muted rounded-lg w-full" />

@@ -5,7 +5,7 @@ import type { InsightItem } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { VoteButtons } from '../VoteButtons'
 
-function InsightSkeleton() {
+export function InsightSkeleton() {
   return (
     <div className="space-y-4">
       {Array.from({ length: 2 }).map((_, i) => (

@@ -3,7 +3,7 @@ import { api } from '@/lib/api'
 import type { PriceItem } from '@/lib/types'
 import { VoteButtons } from '../VoteButtons'
 
-function PricesSkeleton() {
+export function PricesSkeleton() {
   return (
     <div className="space-y-2">
       {Array.from({ length: 5 }).map((_, i) => (

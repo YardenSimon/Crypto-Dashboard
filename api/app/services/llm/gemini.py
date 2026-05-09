@@ -15,7 +15,7 @@ class GeminiClient(LLMClient):
                 json={
                     "contents": [{"parts": [{"text": prompt}]}],
                     "generationConfig": {
-                        "maxOutputTokens": 512,
+                        "maxOutputTokens": 100,
                         "temperature": 0.7,
                     },
                 },
