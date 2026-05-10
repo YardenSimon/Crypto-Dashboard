@@ -21,3 +21,7 @@ web/.env.local
 .DS_Store
 Thumbs.db
 *.swp
+
+# Local / internal
+cookies.txt
+CLAUDE.md

@@ -12,22 +12,24 @@ COOKIE_MAX_AGE = 7 * 24 * 60 * 60  # 7 days in seconds
 
 
 def set_auth_cookie(response: Response, token: str) -> None:
+    is_prod = settings.ENVIRONMENT == "production"
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        secure=settings.ENVIRONMENT == "production",
-        samesite="lax",
+        secure=is_prod,
+        samesite="none" if is_prod else "lax",
         max_age=COOKIE_MAX_AGE,
     )
 
 
 def clear_auth_cookie(response: Response) -> None:
+    is_prod = settings.ENVIRONMENT == "production"
     response.delete_cookie(
         key=COOKIE_NAME,
         httponly=True,
-        secure=settings.ENVIRONMENT == "production",
-        samesite="lax",
+        secure=is_prod,
+        samesite="none" if is_prod else "lax",
     )
 
 _ph = PasswordHasher()
