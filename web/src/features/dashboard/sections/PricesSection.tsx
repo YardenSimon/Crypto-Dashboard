@@ -245,7 +245,7 @@ export function PricesSkeleton() {
 }
 
 export function PricesSection({ dragProps = {} }: PricesSectionProps) {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading: dashboardLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: api.getDashboard,
     refetchInterval: 60_000,
@@ -253,7 +253,7 @@ export function PricesSection({ dragProps = {} }: PricesSectionProps) {
   })
   const prices = data?.prices
 
-  const { data: preferences } = useQuery({
+  const { data: preferences, isLoading: preferencesLoading } = useQuery({
     queryKey: ['preferences'],
     queryFn: api.getPreferences,
   })
@@ -264,26 +264,29 @@ export function PricesSection({ dragProps = {} }: PricesSectionProps) {
   })
 
   const [order, setOrder] = useState<string[]>([])
-  const [orderInitialized, setOrderInitialized] = useState(false)
   const [activeCoin, setActiveCoin] = useState<PriceItem | null>(null)
 
+  // Resync local order when the selected coin set changes (preserves manual drag
+  // order if the same coins are simply refetched).
   useEffect(() => {
-    if (!prices || orderInitialized) return
-    if (preferences?.coin_order?.length) {
-      setOrder(preferences.coin_order)
-    } else {
-      setOrder(prices.map((p) => p.symbol))
-    }
-    setOrderInitialized(true)
-  }, [prices, preferences, orderInitialized])
+    if (!preferences?.coins) return
+    const coins = preferences.coins
+    setOrder((prev) => {
+      const coinSet = new Set(coins)
+      const sameSet = prev.length === coins.length && prev.every((c) => coinSet.has(c))
+      if (sameSet) return prev
+      const saved = (preferences.coin_order ?? []).filter((c) => coinSet.has(c))
+      const newCoins = coins.filter((c) => !saved.includes(c))
+      return [...saved, ...newCoins]
+    })
+  }, [preferences])
 
   const items = useMemo(() => {
-    if (!prices) return []
-    const priceMap = Object.fromEntries(prices.map((p) => [p.symbol, p]))
-    const ordered = order.filter((sym) => sym in priceMap).map((sym) => priceMap[sym])
-    const extra = prices.filter((p) => !order.includes(p.symbol))
-    return [...ordered, ...extra]
-  }, [prices, order])
+    const priceMap = Object.fromEntries((prices ?? []).map((p) => [p.symbol, p]))
+    return order.map((sym) => ({ symbol: sym, data: priceMap[sym] as PriceItem | undefined }))
+  }, [order, prices])
+
+  const isLoading = dashboardLoading || preferencesLoading
 
   /* row drag state */
   const [dragSym, setDragSym] = useState<string | null>(null)
@@ -358,7 +361,7 @@ export function PricesSection({ dragProps = {} }: PricesSectionProps) {
     if (dragSym) { finishDrag(); return }
     if (pressSym === sym) {
       const item = items.find((p) => p.symbol === sym)
-      if (item) setActiveCoin(item)
+      if (item?.data) setActiveCoin(item.data)
     }
     setPressSym(null)
   }, [cancelLongPress, dragSym, finishDrag, pressSym, items])
@@ -419,7 +422,8 @@ export function PricesSection({ dragProps = {} }: PricesSectionProps) {
                   return (
                     <PriceRow
                       key={p.symbol}
-                      item={p}
+                      symbol={p.symbol}
+                      data={p.data}
                       rank={i + 1}
                       isDragging={isDragging}
                       isPressed={isPressed}
@@ -443,7 +447,8 @@ export function PricesSection({ dragProps = {} }: PricesSectionProps) {
 }
 
 interface PriceRowProps {
-  item: PriceItem
+  symbol: string
+  data: PriceItem | undefined
   rank: number
   isDragging: boolean
   isPressed: boolean
@@ -454,9 +459,12 @@ interface PriceRowProps {
   onPointerCancel: () => void
 }
 
-function PriceRow({ item: p, rank, isDragging, isPressed, finalTop, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }: PriceRowProps) {
-  const up = p.change_24h >= 0
-  const spark = useMemo(() => seriesFor(p.symbol, 20, p.price_usd), [p.symbol, p.price_usd])
+function PriceRow({ symbol, data, rank, isDragging, isPressed, finalTop, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }: PriceRowProps) {
+  const up = (data?.change_24h ?? 0) >= 0
+  const spark = useMemo(
+    () => (data ? seriesFor(symbol, 20, data.price_usd) : null),
+    [symbol, data],
+  )
   return (
     <li
       onPointerDown={onPointerDown}
@@ -478,24 +486,40 @@ function PriceRow({ item: p, rank, isDragging, isPressed, finalTop, onPointerDow
     >
       <span className="text-[11.5px] font-mono text-mute pointer-events-none">{rank}</span>
       <span className="flex items-center gap-2.5 min-w-0 pointer-events-none">
-        <CoinMark sym={p.symbol} size={30} />
+        <CoinMark sym={symbol} size={30} />
         <span className="min-w-0">
-          <span className="block text-[13.5px] font-semibold text-ink leading-tight truncate">{p.name}</span>
-          <span className="block text-[11px] font-mono text-mute uppercase">{p.symbol}</span>
+          {data ? (
+            <span className="block text-[13.5px] font-semibold text-ink leading-tight truncate">{data.name}</span>
+          ) : (
+            <span className="block h-3.5 w-20 rounded bg-surface3 animate-pulse" />
+          )}
+          <span className="block text-[11px] font-mono text-mute uppercase">{symbol}</span>
         </span>
       </span>
-      <span className="text-right text-[13.5px] font-semibold text-ink tabular pointer-events-none">{fmtPrice(p.price_usd)}</span>
-      <span className={`text-right text-[12.5px] font-semibold tabular pointer-events-none ${up ? 'text-up' : 'text-down'}`}>
-        <span className="inline-flex items-center gap-0.5 justify-end">
-          {up
-            ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M7 17 17 7M9 7h8v8"/></svg>
-            : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M7 7l10 10M15 17H7V9"/></svg>
-          }
-          {up ? '+' : ''}{p.change_24h.toFixed(2)}%
+      {data ? (
+        <span className="text-right text-[13.5px] font-semibold text-ink tabular pointer-events-none">{fmtPrice(data.price_usd)}</span>
+      ) : (
+        <span className="flex justify-end pointer-events-none"><span className="h-4 w-16 rounded bg-surface3 animate-pulse" /></span>
+      )}
+      {data ? (
+        <span className={`text-right text-[12.5px] font-semibold tabular pointer-events-none ${up ? 'text-up' : 'text-down'}`}>
+          <span className="inline-flex items-center gap-0.5 justify-end">
+            {up
+              ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M7 7l10 10M15 17H7V9"/></svg>
+            }
+            {up ? '+' : ''}{data.change_24h.toFixed(2)}%
+          </span>
         </span>
-      </span>
+      ) : (
+        <span className="flex justify-end pointer-events-none"><span className="h-4 w-12 rounded bg-surface3 animate-pulse" /></span>
+      )}
       <span className="flex justify-end pr-1 pointer-events-none">
-        <Sparkline points={spark} up={up} />
+        {spark ? (
+          <Sparkline points={spark} up={up} />
+        ) : (
+          <span className="h-[28px] w-[92px] rounded bg-surface3 animate-pulse" />
+        )}
       </span>
     </li>
   )

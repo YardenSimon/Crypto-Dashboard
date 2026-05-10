@@ -178,8 +178,9 @@ async def assemble_dashboard(user: User, db: Session) -> dict:
         if isinstance(raw_prices, Exception) or not raw_prices:
             stale = get_stale_cached(PRICES_CACHE_KEY, db)
             if stale:
-                prices_data, fetched_at = stale[0]["items"], stale[1]
-                cache_ages["prices"] = format_cache_age(fetched_at)
+                user_coins = set(prefs.coins)
+                prices_data = [item for item in stale[0]["items"] if item["symbol"] in user_coins]
+                cache_ages["prices"] = format_cache_age(stale[1])
         else:
             prices_data = raw_prices
             set_cached(PRICES_CACHE_KEY, {"items": raw_prices}, PRICES_TTL, db)
