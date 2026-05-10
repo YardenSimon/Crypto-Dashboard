@@ -52,7 +52,7 @@ export function Header({ user }: HeaderProps) {
             <span className="font-extrabold tracking-tight text-[17px] text-ink">Cryptide</span>
           </a>
           <nav className="hidden md:flex items-center gap-1 text-[13px] font-medium">
-            <a href="#" className="px-3 py-1.5 rounded-md text-ink bg-surface2 transition-colors">Dashboard</a>
+            <Link to="/dashboard" className="px-3 py-1.5 rounded-md text-ink bg-surface2 transition-colors">Dashboard</Link>
           </nav>
         </div>
 
