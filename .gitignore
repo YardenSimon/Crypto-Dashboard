@@ -16,6 +16,7 @@ dist/
 web/node_modules/
 web/dist/
 web/.env.local
+web/*.tsbuildinfo
 
 # Editors / OS
 .DS_Store
