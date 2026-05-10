@@ -32,7 +32,11 @@ export function PreferencesPage() {
   })
 
   useEffect(() => {
-    if (prefs) reset(prefs)
+    if (prefs) reset({
+      coins: prefs.coins as QuizFormValues['coins'],
+      investor_types: prefs.investor_types as QuizFormValues['investor_types'],
+      content_types: prefs.content_types as QuizFormValues['content_types'],
+    })
   }, [prefs, reset])
 
   const mutation = useMutation({
@@ -56,7 +60,7 @@ export function PreferencesPage() {
 
   function onSubmit(values: QuizFormValues) {
     setSaved(false)
-    mutation.mutate(values)
+    mutation.mutate({ ...values, dashboard_layout: prefs?.dashboard_layout ?? null, coin_order: prefs?.coin_order ?? null })
   }
 
   return (

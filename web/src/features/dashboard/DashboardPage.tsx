@@ -71,8 +71,10 @@ export function DashboardPage() {
   const [layout, setLayout] = useState<{ left: SectionId[]; right: SectionId[] }>(DEFAULT_LAYOUT)
   const layoutInitializedRef = useRef(false)
   const [drag, setDrag] = useState<DragState | null>(null)
-  const [leftParent]  = useAutoAnimate<HTMLDivElement>()
-  const [rightParent] = useAutoAnimate<HTMLDivElement>()
+  const leftParent  = useRef<HTMLDivElement | null>(null)
+  const rightParent = useRef<HTMLDivElement | null>(null)
+  const [leftAnimate]  = useAutoAnimate<HTMLDivElement>()
+  const [rightAnimate] = useAutoAnimate<HTMLDivElement>()
 
   const patchLayout = useMutation({
     mutationFn: api.patchLayout,
@@ -254,7 +256,10 @@ export function DashboardPage() {
             return (
               <div
                 key={col}
-                ref={col === 'left' ? leftParent : rightParent}
+                ref={(el) => {
+                  if (col === 'left') { leftAnimate(el); leftParent.current = el }
+                  else { rightAnimate(el); rightParent.current = el }
+                }}
                 className="flex flex-col gap-6 min-h-[120px]"
               >
                 {visible.map((id, vi) => (

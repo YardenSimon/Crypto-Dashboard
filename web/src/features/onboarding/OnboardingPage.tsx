@@ -47,7 +47,7 @@ export function OnboardingPage() {
   if (user.onboarding_completed) return <Navigate to="/dashboard" replace />
 
   function onSubmit(values: QuizFormValues) {
-    mutation.mutate(values)
+    mutation.mutate({ ...values, dashboard_layout: null, coin_order: null })
   }
 
   return (
