@@ -23,7 +23,7 @@ COIN_KEYWORDS = {
     "XRP": ["xrp", "ripple"],
     "ADA": ["cardano", "ada"],
     "DOGE": ["dogecoin", "doge"],
-    "MATIC": ["polygon", "matic"],
+    "POL": ["polygon", "matic", "pol"],
     "DOT": ["polkadot", "dot"],
     "AVAX": ["avalanche", "avax"],
     "LINK": ["chainlink", "link"],

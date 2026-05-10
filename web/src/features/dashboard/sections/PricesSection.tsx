@@ -245,12 +245,13 @@ export function PricesSkeleton() {
 }
 
 export function PricesSection({ dragProps = {} }: PricesSectionProps) {
-  const { data: prices, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: api.getDashboard,
     refetchInterval: 60_000,
-    select: (d) => d.prices,
+    select: (d) => ({ prices: d.prices, cacheAge: d.cache_ages.prices }),
   })
+  const prices = data?.prices
 
   const { data: preferences } = useQuery({
     queryKey: ['preferences'],
@@ -381,6 +382,9 @@ export function PricesSection({ dragProps = {} }: PricesSectionProps) {
             {dragProps?.onPointerDown && <DragHandle />}
             <h2 className="font-semibold text-[15px] text-ink leading-tight">Coin Prices</h2>
           </div>
+          {data?.cacheAge && (
+            <span className="text-[11px] text-mute shrink-0">Updated {data.cacheAge}</span>
+          )}
         </div>
         <div className="px-4 pt-3 pb-1">
           {isLoading ? (

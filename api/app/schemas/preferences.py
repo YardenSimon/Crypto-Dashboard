@@ -1,8 +1,8 @@
 from pydantic import BaseModel, ConfigDict, field_validator
 
-VALID_COINS = {"BTC", "ETH", "SOL", "BNB", "XRP", "ADA", "DOGE", "MATIC", "DOT", "AVAX", "LINK", "UNI"}
+VALID_COINS = {"BTC", "ETH", "SOL", "BNB", "XRP", "ADA", "DOGE", "POL", "DOT", "AVAX", "LINK", "UNI"}
 VALID_INVESTOR_TYPES = {"HODLer", "Day Trader", "NFT Collector"}
-VALID_CONTENT_TYPES = {"Market News", "Charts", "Social", "Fun"}
+VALID_CONTENT_TYPES = {"Market News", "Coin Prices", "AI Insight of the Day", "Daily Meme"}
 
 
 class PreferencesRequest(BaseModel):

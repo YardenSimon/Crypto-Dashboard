@@ -8,7 +8,7 @@ const COIN_STYLES: Record<string, { bg: string; fg: string; glyph: string }> = {
   XRP:  { bg: '#76949F', fg: '#161015', glyph: '✕' },
   DOT:  { bg: '#9685A8', fg: '#F0E6E1', glyph: '●' },
   AVAX: { bg: '#E08A82', fg: '#161015', glyph: 'A' },
-  MATIC:{ bg: '#7C5469', fg: '#F0E6E1', glyph: 'M' },
+  POL:  { bg: '#7C5469', fg: '#F0E6E1', glyph: 'M' },
 }
 
 export function CoinMark({ sym, size = 32 }: { sym: string; size?: number }) {

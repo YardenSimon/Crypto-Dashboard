@@ -8,10 +8,13 @@ from app.models.content_item import ContentItem, ContentType
 from app.models.vote import Vote
 from app.models.user import User
 from app.services import coingecko, news as news_svc, reddit_memes
-from app.services.cache import format_cache_age, get_cached, get_stale_cached
+from app.services.cache import format_cache_age, get_cached, get_stale_cached, set_cached
 from app.jobs.daily_insights import generate_insight_for
 from app.services.news import CACHE_KEY as NEWS_KEY
 from app.services.reddit_memes import CACHE_KEY as MEME_KEY
+
+PRICES_CACHE_KEY = "coin_prices"
+PRICES_TTL = 300  # 5 minutes
 
 
 def _upsert_news_content_items(items: list[dict], db: Session) -> None:
@@ -143,8 +146,14 @@ async def assemble_dashboard(user: User, db: Session) -> dict:
     prices_data = None
     if "Charts" in content_types:
         raw_prices = results.get("prices")
-        if not isinstance(raw_prices, Exception):
+        if isinstance(raw_prices, Exception) or not raw_prices:
+            stale = get_stale_cached(PRICES_CACHE_KEY, db)
+            if stale:
+                prices_data, fetched_at = stale[0]["items"], stale[1]
+                cache_ages["prices"] = format_cache_age(fetched_at)
+        else:
             prices_data = raw_prices
+            set_cached(PRICES_CACHE_KEY, {"items": raw_prices}, PRICES_TTL, db)
 
     # ── Meme ──────────────────────────────────────────────────────────────
     meme_data = None

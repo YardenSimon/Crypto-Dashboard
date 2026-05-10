@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
-export const COINS = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'DOGE', 'MATIC', 'DOT', 'AVAX', 'LINK', 'UNI'] as const
+export const COINS = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'DOGE', 'POL', 'DOT', 'AVAX', 'LINK', 'UNI'] as const
 export const INVESTOR_TYPES = ['HODLer', 'Day Trader', 'NFT Collector'] as const
-export const CONTENT_TYPES = ['Market News', 'Charts', 'Social', 'Fun'] as const
+export const CONTENT_TYPES = ['Market News', 'Coin Prices', 'AI Insight of the Day', 'Daily Meme'] as const
 
 export const quizSchema = z.object({
   coins: z.array(z.enum(COINS)).min(1, 'Select at least one coin'),

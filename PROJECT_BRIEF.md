@@ -249,7 +249,7 @@ All authenticated endpoints require the JWT cookie. CORS allows only the configu
 
 ### Onboarding Quiz
 - Three multi-select questions stored in `user_preferences`.
-- Coins: BTC, ETH, SOL, BNB, XRP, ADA, DOGE, MATIC, DOT, AVAX, LINK, UNI (min 1).
+- Coins: BTC, ETH, SOL, BNB, XRP, ADA, DOGE, POL, DOT, AVAX, LINK, UNI (min 1).
 - Investor types: HODLer, Day Trader, NFT Collector (min 1, max 2).
 - Content types: Market News, Charts, Social, Fun (min 1, max 4).
 - Submitting the quiz sets `onboarding_completed = true` and redirects to `/dashboard`.
