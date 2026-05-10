@@ -8,7 +8,7 @@ from app.models.content_item import ContentItem, ContentType
 from app.models.vote import Vote
 from app.models.user import User
 from app.services import coingecko, news as news_svc, reddit_memes
-from app.services.cache import format_cache_age, get_cached, get_stale_cached, set_cached
+from app.services.cache import format_cache_age, get_stale_cached, set_cached
 from app.jobs.daily_insights import generate_insight_for
 from app.services.news import CACHE_KEY as NEWS_KEY
 from app.services.reddit_memes import CACHE_KEY as MEME_KEY
@@ -76,6 +76,34 @@ def _upsert_price_content_items(items: list[dict], db: Session) -> None:
         )
 
 
+def _last_saved_meme(db: Session) -> tuple[dict, datetime] | None:
+    ci = db.execute(
+        select(ContentItem)
+        .where(
+            ContentItem.type == ContentType.meme,
+            ContentItem.image_url.isnot(None),
+            ContentItem.source_url.isnot(None),
+        )
+        .order_by(ContentItem.created_at.desc())
+        .limit(1)
+    ).scalar_one_or_none()
+    if not ci:
+        return None
+    created_at = ci.created_at
+    if created_at.tzinfo is None:
+        created_at = created_at.replace(tzinfo=timezone.utc)
+    return (
+        {
+            "title": ci.title,
+            "image_url": ci.image_url,
+            "reddit_url": ci.source_url,
+            "upvotes": int((ci.meta or {}).get("upvotes", 0)),
+            "content_item_id": str(ci.id),
+        },
+        created_at,
+    )
+
+
 def _upsert_meme_content_item(meme: dict, db: Session) -> None:
     url = meme.get("reddit_url")
     if not url:
@@ -93,7 +121,7 @@ def _upsert_meme_content_item(meme: dict, db: Session) -> None:
             source_url=url,
             image_url=meme.get("image_url"),
             category_tags=[],
-            meta={},
+            meta={"upvotes": meme.get("upvotes", 0)},
         )
         db.add(ci)
         db.flush()
@@ -165,6 +193,11 @@ async def assemble_dashboard(user: User, db: Session) -> dict:
             if stale:
                 meme_data, fetched_at = stale[0], stale[1]
                 cache_ages["meme"] = format_cache_age(fetched_at)
+            else:
+                last = _last_saved_meme(db)
+                if last:
+                    meme_data, created_at = last
+                    cache_ages["meme"] = format_cache_age(created_at)
         elif raw_meme:
             meme_data = raw_meme
 

@@ -5,6 +5,7 @@ import pytest
 
 from app.core.security import hash_password
 from app.models.api_cache import APICache
+from app.models.content_item import ContentItem, ContentType
 from app.models.user import User
 from app.models.user_preference import UserPreference
 
@@ -106,4 +107,73 @@ def test_news_cache_miss_calls_external_feed(news_auth_client, db, mocker):
     entry = db.get(APICache, "crypto_news")
     if entry:
         db.delete(entry)
+        db.commit()
+
+
+@pytest.fixture()
+def meme_user(db):
+    user = User(
+        email="memetest@example.com",
+        name="Meme Tester",
+        password_hash=hash_password("password123"),
+        onboarding_completed=True,
+    )
+    db.add(user)
+    db.flush()
+    pref = UserPreference(
+        user_id=user.id,
+        coins=["BTC"],
+        investor_types=[],
+        content_types=["Daily Meme"],
+    )
+    db.add(pref)
+    db.commit()
+    db.refresh(user)
+    yield user
+    db.delete(user)
+    db.commit()
+
+
+@pytest.fixture()
+def meme_auth_client(client, meme_user):
+    client.post("/auth/login", json={"email": "memetest@example.com", "password": "password123"})
+    return client
+
+
+def test_meme_falls_back_to_last_saved_content_item(meme_auth_client, db, mocker):
+    """When Reddit is unreachable AND api_cache is empty, serve the last meme
+    saved in content_items so the user always sees something."""
+    cache_entry = db.get(APICache, "reddit_meme")
+    if cache_entry:
+        db.delete(cache_entry)
+        db.commit()
+
+    saved = ContentItem(
+        type=ContentType.meme,
+        title="Old but gold",
+        body="",
+        source_url="https://reddit.com/r/cryptocurrencymemes/comments/oldsave/",
+        image_url="https://i.redd.it/oldsave.jpeg",
+        category_tags=[],
+        meta={"upvotes": 42},
+    )
+    db.add(saved)
+    db.commit()
+    saved_id = str(saved.id)
+
+    try:
+        mocker.patch(
+            "app.services.reddit_memes.httpx.AsyncClient",
+            side_effect=RuntimeError("Reddit unreachable"),
+        )
+
+        resp = meme_auth_client.get("/dashboard")
+        assert resp.status_code == 200
+        meme = resp.json().get("meme")
+        assert meme is not None, "fallback should serve the last saved meme"
+        assert meme["content_item_id"] == saved_id
+        assert meme["image_url"] == "https://i.redd.it/oldsave.jpeg"
+        assert meme["upvotes"] == 42
+    finally:
+        db.delete(saved)
         db.commit()
