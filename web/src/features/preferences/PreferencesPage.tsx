@@ -35,7 +35,9 @@ export function PreferencesPage() {
     if (prefs) reset({
       coins: prefs.coins as QuizFormValues['coins'],
       investor_types: prefs.investor_types as QuizFormValues['investor_types'],
-      content_types: prefs.content_types as QuizFormValues['content_types'],
+      content_types: prefs.content_types.filter(
+        (ct): ct is QuizFormValues['content_types'][number] => (CONTENT_TYPES as readonly string[]).includes(ct)
+      ),
     })
   }, [prefs, reset])
 
