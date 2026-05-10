@@ -153,7 +153,7 @@ Crypto-Dashboard/
 | user_id | UUID | PK + FK → users.id |
 | coins | text[] | e.g. `['BTC', 'ETH', 'SOL']`, min 1 |
 | investor_types | text[] | Max 2: HODLer / Day Trader / NFT Collector |
-| content_types | text[] | Subset of: Market News, Charts, Social, Fun |
+| content_types | text[] | Subset of: Market News, Coin Prices, AI Insight of the Day, Daily Meme |
 | updated_at | timestamptz | |
 
 ### `content_items`
@@ -251,7 +251,7 @@ All authenticated endpoints require the JWT cookie. CORS allows only the configu
 - Three multi-select questions stored in `user_preferences`.
 - Coins: BTC, ETH, SOL, BNB, XRP, ADA, DOGE, POL, DOT, AVAX, LINK, UNI (min 1).
 - Investor types: HODLer, Day Trader, NFT Collector (min 1, max 2).
-- Content types: Market News, Charts, Social, Fun (min 1, max 4).
+- Content types: Market News, Coin Prices, AI Insight of the Day, Daily Meme (min 1, max 4).
 - Submitting the quiz sets `onboarding_completed = true` and redirects to `/dashboard`.
 
 ### Dashboard — Four Independent Sections
