@@ -5,7 +5,7 @@ from app.core.deps import get_current_user, get_db
 from app.core.security import create_access_token, set_auth_cookie
 from app.models.user import User
 from app.models.user_preference import UserPreference
-from app.schemas.preferences import PreferencesRequest, PreferencesResponse
+from app.schemas.preferences import CoinOrderRequest, LayoutRequest, PreferencesRequest, PreferencesResponse
 from app.schemas.user import UserResponse
 
 router = APIRouter()
@@ -46,6 +46,34 @@ def put_preferences(
     if not user.onboarding_completed:
         user.onboarding_completed = True
 
+    db.commit()
+    db.refresh(user)
+    return user.preferences
+
+
+@router.patch("/me/layout", response_model=PreferencesResponse)
+def patch_layout(
+    body: LayoutRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not user.preferences:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Preferences not set")
+    user.preferences.dashboard_layout = body.layout
+    db.commit()
+    db.refresh(user)
+    return user.preferences
+
+
+@router.patch("/me/coin-order", response_model=PreferencesResponse)
+def patch_coin_order(
+    body: CoinOrderRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not user.preferences:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Preferences not set")
+    user.preferences.coin_order = body.coin_order
     db.commit()
     db.refresh(user)
     return user.preferences

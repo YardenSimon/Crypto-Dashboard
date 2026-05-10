@@ -27,6 +27,10 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ content_item_id: contentItemId, value }),
     }),
+  patchLayout: (layout: { left: string[]; right: string[] }) =>
+    apiFetch<Preferences>('/me/layout', { method: 'PATCH', body: JSON.stringify({ layout }) }),
+  patchCoinOrder: (coin_order: string[]) =>
+    apiFetch<Preferences>('/me/coin-order', { method: 'PATCH', body: JSON.stringify({ coin_order }) }),
   login: (email: string, password: string) =>
     apiFetch<User>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
   signup: (email: string, name: string, password: string) =>

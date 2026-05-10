@@ -1,4 +1,3 @@
-import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '@/lib/queryClient'
 import { api } from '@/lib/api'
@@ -34,12 +33,7 @@ export function VoteButtons({ contentItemId }: VoteButtonsProps) {
       return { prev }
     },
     onError: (_err, _vars, context) => {
-      if (context?.prev) {
-        queryClient.setQueryData(['dashboard'], context.prev)
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      if (context?.prev) queryClient.setQueryData(['dashboard'], context.prev)
     },
   })
 
@@ -48,30 +42,40 @@ export function VoteButtons({ contentItemId }: VoteButtonsProps) {
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-0.5" role="group" aria-label="Tune your feed">
       <button
         onClick={() => handleVote(1)}
         disabled={isPending}
-        aria-label="Upvote"
-        className={`rounded p-1 transition-colors ${
+        title="Show me more like this"
+        aria-label="Show me more like this"
+        aria-pressed={currentVote === 1}
+        className={`flex items-center justify-center rounded-md w-7 h-7 transition-colors ${
           currentVote === 1
-            ? 'text-green-600'
-            : 'text-muted-foreground hover:text-green-600'
+            ? 'text-up bg-up/15 ring-1 ring-up/40'
+            : 'text-mute hover:text-up hover:bg-surface2'
         }`}
       >
-        <ThumbsUp className="h-4 w-4" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="w-[15px] h-[15px]">
+          <path d="M7 10v11h10.6a2 2 0 0 0 2-1.6l1.4-7a2 2 0 0 0-2-2.4H14V6.5A2.5 2.5 0 0 0 11.5 4l-.5 0L7 10Z"/>
+          <path d="M3 10h4v11H3z"/>
+        </svg>
       </button>
       <button
         onClick={() => handleVote(-1)}
         disabled={isPending}
-        aria-label="Downvote"
-        className={`rounded p-1 transition-colors ${
+        title="Show me less like this"
+        aria-label="Show me less like this"
+        aria-pressed={currentVote === -1}
+        className={`flex items-center justify-center rounded-md w-7 h-7 transition-colors ${
           currentVote === -1
-            ? 'text-red-500'
-            : 'text-muted-foreground hover:text-red-500'
+            ? 'text-down bg-down/15 ring-1 ring-down/40'
+            : 'text-mute hover:text-down hover:bg-surface2'
         }`}
       >
-        <ThumbsDown className="h-4 w-4" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="w-[15px] h-[15px]">
+          <path d="M17 14V3H6.4a2 2 0 0 0-2 1.6l-1.4 7a2 2 0 0 0 2 2.4H10v3.5A2.5 2.5 0 0 0 12.5 20l.5 0L17 14Z"/>
+          <path d="M21 14h-4V3h4z"/>
+        </svg>
       </button>
     </div>
   )

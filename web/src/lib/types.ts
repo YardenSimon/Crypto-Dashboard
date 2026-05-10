@@ -9,6 +9,8 @@ export interface Preferences {
   coins: string[]
   investor_types: string[]
   content_types: string[]
+  dashboard_layout: { left: string[]; right: string[] } | null
+  coin_order: string[] | null
 }
 
 export interface VoteResponse {

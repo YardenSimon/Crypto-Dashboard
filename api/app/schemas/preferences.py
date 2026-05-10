@@ -51,3 +51,13 @@ class PreferencesResponse(BaseModel):
     coins: list[str]
     investor_types: list[str]
     content_types: list[str]
+    dashboard_layout: dict | None = None
+    coin_order: list[str] | None = None
+
+
+class LayoutRequest(BaseModel):
+    layout: dict  # {"left": [...], "right": [...]}
+
+
+class CoinOrderRequest(BaseModel):
+    coin_order: list[str]

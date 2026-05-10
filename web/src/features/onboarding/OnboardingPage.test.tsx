@@ -27,15 +27,17 @@ describe('OnboardingPage form validation', () => {
     expect(await screen.findByText('Select at least one coin')).toBeInTheDocument()
   })
 
-  it('shows validation error when investor_types exceeds 2', async () => {
+  it('disables extra investor type options once 2 are selected', async () => {
     renderWithProviders(<OnboardingPage />)
     const hodlerBtn = screen.getByRole('button', { name: /HODLer/i })
     const traderBtn = screen.getByRole('button', { name: /Day Trader/i })
     const nftBtn = screen.getByRole('button', { name: /NFT Collector/i })
+
+    expect(nftBtn).not.toBeDisabled()
+
     await userEvent.click(hodlerBtn)
     await userEvent.click(traderBtn)
-    await userEvent.click(nftBtn)
-    await userEvent.click(screen.getByRole('button', { name: /get my dashboard/i }))
-    expect(await screen.findByText('Maximum 2 investor types')).toBeInTheDocument()
+
+    expect(nftBtn).toBeDisabled()
   })
 })

@@ -4,15 +4,79 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --radius: 0.5rem;
+    --background:   300 16% 7%;        /* #161015 */
+    --foreground:   22 52% 91%;        /* #F0E6E1 */
+    --primary:      183 22% 63%;       /* #86BBBD teal */
+    --primary-foreground: 300 16% 7%;
+    --secondary:    308 14% 14%;       /* #2A1F28 */
+    --secondary-foreground: 22 52% 91%;
+    --muted:        300 14% 11%;       /* #211921 surface */
+    --muted-foreground: 330 6% 46%;   /* #7E6F76 */
+    --accent:       308 14% 14%;       /* #2A1F28 */
+    --accent-foreground: 22 52% 91%;
+    --destructive:  4 64% 70%;         /* #E08A82 */
+    --destructive-foreground: 22 52% 91%;
+    --border:       321 15% 20%;       /* #3B2C36 */
+    --input:        314 14% 25%;       /* #4A3744 */
+    --ring:         183 22% 63%;       /* #86BBBD */
+    --popover:      308 14% 14%;       /* #2A1F28 */
+    --popover-foreground: 22 52% 91%;
+    --card:         300 14% 11%;       /* #211921 */
+    --card-foreground: 22 52% 91%;
+    --radius: 0.75rem;
   }
 }
+
+html, body {
+  background: #161015;
+  color: #F0E6E1;
+  font-family: Manrope, ui-sans-serif, system-ui;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(900px 500px at 12% -8%, rgba(134,187,189,0.07), transparent 60%),
+    radial-gradient(800px 480px at 105% 12%, rgba(83,55,71,0.30), transparent 60%),
+    radial-gradient(700px 500px at 50% 110%, rgba(118,148,159,0.06), transparent 60%);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+.dotgrid {
+  background-image: radial-gradient(rgba(240,230,225,0.07) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.stripes {
+  background: repeating-linear-gradient(135deg, rgba(240,230,225,0.04) 0 1px, transparent 1px 9px);
+}
+
+::selection { background: #86BBBD; color: #161015; }
+
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #3B2C36; border-radius: 4px; }
+*::-webkit-scrollbar-thumb:hover { background: #4A3744; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+.pop-in { animation: pop-in 180ms cubic-bezier(.2,.7,.3,1) both; }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in { animation: fade-in 160ms ease-out both; }

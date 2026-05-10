@@ -63,14 +63,11 @@ export function PreferencesPage() {
     <div className="min-h-screen bg-background">
       <Header user={user} />
       <main className="mx-auto max-w-2xl px-4 py-12">
-        <Link to="/dashboard" className="text-sm text-muted-foreground hover:underline mb-6 inline-block">
-          ← Back to dashboard
-        </Link>
         <h1 className="mb-2 text-3xl font-bold">Your preferences</h1>
         <p className="mb-8 text-muted-foreground">Update what you see on your dashboard.</p>
 
         {saved && (
-          <div className="mb-6 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+          <div className="mb-6 rounded-xl border border-teal/25 bg-teal/[0.07] px-4 py-3 text-sm text-teal">
             Preferences saved — your dashboard will refresh with the new settings.
           </div>
         )}
@@ -137,6 +134,13 @@ export function PreferencesPage() {
               'Save changes'
             )}
           </Button>
+
+          <Link
+            to="/dashboard"
+            className="mt-3 flex items-center justify-center gap-1.5 w-full rounded-full border border-line2 py-2.5 text-sm font-medium text-subt hover:text-ink hover:border-line transition-colors"
+          >
+            ← Go back to Dashboard
+          </Link>
         </form>
       </main>
     </div>

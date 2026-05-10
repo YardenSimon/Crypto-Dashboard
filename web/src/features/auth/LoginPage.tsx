@@ -48,7 +48,7 @@ export function LoginPage() {
               id="email"
               type="email"
               autoComplete="email"
-              className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring bg-secondary text-foreground"
               {...register('email')}
             />
             {errors.email && (
@@ -62,7 +62,7 @@ export function LoginPage() {
               id="password"
               type="password"
               autoComplete="current-password"
-              className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring bg-secondary text-foreground"
               {...register('password')}
             />
             {errors.password && (
