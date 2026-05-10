@@ -2,7 +2,7 @@
 
 A full-stack cryptocurrency dashboard that surfaces real-time prices, curated news, AI-generated market insights, and community memes — all filtered to each user's personalised watchlist and investor profile.
 
-**Live demo:** [cryptide.vercel.app](https://cryptide.vercel.app) &nbsp;·&nbsp; **API:** [cryptide-api.up.railway.app](https://cryptide-api.up.railway.app/health)
+**Live demo:** [cryptide-mocha.vercel.app](https://cryptide-mocha.vercel.app) &nbsp;·&nbsp; **API:** [crypto-dashboard-production-1d49.up.railway.app](https://crypto-dashboard-production-1d49.up.railway.app/health)
 
 > Screenshots coming after first production deploy.
 
