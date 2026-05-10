@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEventHandler } from 'react'
+import { useCallback, useEffect, useRef, useState, type PointerEventHandler } from 'react'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Navigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
@@ -75,6 +75,8 @@ export function DashboardPage() {
   const rightParent = useRef<HTMLDivElement | null>(null)
   const [leftAnimate]  = useAutoAnimate<HTMLDivElement>()
   const [rightAnimate] = useAutoAnimate<HTMLDivElement>()
+  const leftRef  = useCallback((el: HTMLDivElement | null) => { leftAnimate(el); leftParent.current = el }, [leftAnimate])
+  const rightRef = useCallback((el: HTMLDivElement | null) => { rightAnimate(el); rightParent.current = el }, [rightAnimate])
 
   const patchLayout = useMutation({
     mutationFn: api.patchLayout,
@@ -256,10 +258,7 @@ export function DashboardPage() {
             return (
               <div
                 key={col}
-                ref={(el) => {
-                  if (col === 'left') { leftAnimate(el); leftParent.current = el }
-                  else { rightAnimate(el); rightParent.current = el }
-                }}
+                ref={col === 'left' ? leftRef : rightRef}
                 className="flex flex-col gap-6 min-h-[120px]"
               >
                 {visible.map((id, vi) => (
