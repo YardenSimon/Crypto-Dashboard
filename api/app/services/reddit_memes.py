@@ -1,11 +1,22 @@
+from datetime import datetime, time, timedelta
+from zoneinfo import ZoneInfo
+
 import httpx
 from sqlalchemy.orm import Session
 
 from app.services.cache import get_cached, set_cached
 
-MEME_TTL = 21600  # 6 hours
 CACHE_KEY = "reddit_meme"
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".gif", ".webp")
+MEME_TZ = ZoneInfo("Asia/Jerusalem")
+MEME_ROLLOVER_HOUR = 8  # cache rolls over at 08:00 Israel time
+
+
+def _seconds_until_next_rollover() -> int:
+    now = datetime.now(MEME_TZ)
+    rollover_today = datetime.combine(now.date(), time(MEME_ROLLOVER_HOUR), tzinfo=MEME_TZ)
+    next_rollover = rollover_today if now < rollover_today else rollover_today + timedelta(days=1)
+    return max(1, int((next_rollover - now).total_seconds()))
 
 
 async def fetch_meme(db: Session) -> dict | None:
@@ -49,7 +60,7 @@ async def fetch_meme(db: Session) -> dict | None:
             break
 
         if meme:
-            set_cached(CACHE_KEY, meme, MEME_TTL, db)
+            set_cached(CACHE_KEY, meme, _seconds_until_next_rollover(), db)
 
         return meme
 
