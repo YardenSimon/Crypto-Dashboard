@@ -111,15 +111,16 @@ async def assemble_dashboard(user: User, db: Session) -> dict:
     if "Market News" in content_types:
         coros.append(news_svc.fetch_news(prefs.coins, db))
         labels.append("news")
-    if "Charts" in content_types:
+    if "Coin Prices" in content_types:
         coros.append(coingecko.fetch_prices(prefs.coins))
         labels.append("prices")
-    if "Fun" in content_types:
+    if "Daily Meme" in content_types:
         coros.append(reddit_memes.fetch_meme(db))
         labels.append("meme")
-    for it in prefs.investor_types:
-        coros.append(generate_insight_for(it, db))
-        labels.append(f"insight_{it}")
+    if "AI Insight of the Day" in content_types:
+        for it in prefs.investor_types:
+            coros.append(generate_insight_for(it, db))
+            labels.append(f"insight_{it}")
 
     raw = await asyncio.gather(*coros, return_exceptions=True)
     results = dict(zip(labels, raw))
@@ -144,7 +145,7 @@ async def assemble_dashboard(user: User, db: Session) -> dict:
 
     # ── Prices ────────────────────────────────────────────────────────────
     prices_data = None
-    if "Charts" in content_types:
+    if "Coin Prices" in content_types:
         raw_prices = results.get("prices")
         if isinstance(raw_prices, Exception) or not raw_prices:
             stale = get_stale_cached(PRICES_CACHE_KEY, db)
@@ -157,7 +158,7 @@ async def assemble_dashboard(user: User, db: Session) -> dict:
 
     # ── Meme ──────────────────────────────────────────────────────────────
     meme_data = None
-    if "Fun" in content_types:
+    if "Daily Meme" in content_types:
         raw_meme = results.get("meme")
         if isinstance(raw_meme, Exception) or not raw_meme:
             stale = get_stale_cached(MEME_KEY, db)

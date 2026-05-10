@@ -47,9 +47,9 @@ function todayLabel(): string {
 
 const CONTENT_TYPE_TO_SECTION: Record<string, SectionId> = {
   'Market News': 'news',
-  'Charts': 'prices',
-  'Social': 'insight',
-  'Fun': 'meme',
+  'Coin Prices': 'prices',
+  'AI Insight of the Day': 'insight',
+  'Daily Meme': 'meme',
 }
 
 const DEFAULT_LAYOUT = { left: ['news', 'insight'] as SectionId[], right: ['prices', 'meme'] as SectionId[] }

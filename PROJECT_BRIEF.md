@@ -265,9 +265,9 @@ All authenticated endpoints require the JWT cookie. CORS allows only the configu
 
 Section visibility is controlled by content preferences:
 - "Market News" → News section
-- "Charts" → Coin Prices section
-- "Fun" → Meme section
-- AI Insight is always shown regardless of preferences
+- "Coin Prices" → Coin Prices section
+- "AI Insight of the Day" → Insight section
+- "Daily Meme" → Meme section
 
 Graceful degradation: stale `api_cache` data is served with "Last updated: X ago" if a live fetch fails. Sections never show as broken.
 
